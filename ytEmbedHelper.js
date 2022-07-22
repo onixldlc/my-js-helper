@@ -4,3 +4,8 @@ function getYtInfoFrmUrl(ytUrl){
 	matched.shift()
 	return matched
 }
+
+function getYtIdFromUrl(ytUrl){
+	var pattern = /(?:https:\/\/)(?:www\.youtube\.com\/|youtu\.be)(?:watch\?v=|embed\/|\/)(.*)/
+	return ytUrl.match(pattern)[1]
+}
