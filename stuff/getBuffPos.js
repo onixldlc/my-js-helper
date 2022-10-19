@@ -26,12 +26,13 @@ function getBuffPos(buffer, index){
       counter--
     }
     i++
-    if( i >= len ){ 
-      throw "Error: either you forgot to add '}' or the buffer is corrupted" 
-    }
-
+    
   }while( counter && i < len)
   end=i
-
+  
+  if( i >= len ){ 
+    throw "Error: either you forgot to add '}' or the buffer is corrupted" 
+  }
+  
   return [start, end]
 }
