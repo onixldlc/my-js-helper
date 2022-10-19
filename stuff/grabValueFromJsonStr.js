@@ -26,10 +26,9 @@ function getBuffPos(buffer, index){
   let i = start
 
   do{
-    
     let character = buffer[i];
     if(character == "{"){
-      stack1.pop(character)
+      stack1.push(character)
     }else if(character == "["){
       stack2.push(character)
     }
@@ -42,8 +41,7 @@ function getBuffPos(buffer, index){
     if( i >= len ){ 
       throw "Error: either you forgot to add '}' or the buffer is corrupted" 
     }
-
-  }while( stack1.length > 0 && stack2.length > 0 && i < len)
+  }while( (stack1.length > 0 || stack2.length > 0) && i < len)
   end=i
 
   return [start, end]
