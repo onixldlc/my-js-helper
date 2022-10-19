@@ -7,11 +7,11 @@ function grabValueFrom(buffer, key){
 
 function closestBracketForward(buffer, index){
   for(let i=index; i < buffer.length; i++){
-    if(buffer[i]=="{"){
+    if(buffer[i]=="{" ||  buffer[i]=="["){
       return i
     }
   }
-  throw "Error: closest '{' was not found in buffer" 
+  throw "Error: closest '{' or '[' was not found in buffer" 
 }
 
 
@@ -26,9 +26,9 @@ function getBuffPos(buffer, index){
   do{
     
     let character = buffer[i];
-    if(character == "{"){
+    if(character == "{" || character == "["){
       counter++
-    }else if(character == "}"){
+    }else if(character == "}" || character == "]"){
       counter--
     }
     i++
