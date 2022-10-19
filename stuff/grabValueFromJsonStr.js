@@ -1,6 +1,12 @@
+function grabValueFrom(buffer, key){
+  let keyPos = buffer.indexOf(key)
+  let buffPos = getBuffPos(buffer, keyPos)
+  let data = buffer.slice(...buffPos)
+  return JSON.parse(data)
+}
 
 function closestBracketForward(buffer, index){
-  for(let i=index, i < buffer.length, i++){
+  for(let i=index; i < buffer.length; i++){
     if(buffer[i]=="{"){
       return i
     }
@@ -26,13 +32,12 @@ function getBuffPos(buffer, index){
       counter--
     }
     i++
-    
+    if( i >= len ){ 
+      throw "Error: either you forgot to add '}' or the buffer is corrupted" 
+    }
+
   }while( counter && i < len)
   end=i
-  
-  if( i >= len ){ 
-    throw "Error: either you forgot to add '}' or the buffer is corrupted" 
-  }
-  
+
   return [start, end]
 }
