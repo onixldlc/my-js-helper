@@ -18,7 +18,8 @@ function closestBracketForward(buffer, index){
 
 
 function getBuffPos(buffer, index){
-  let counter = 0
+  let stack1 = []
+  let stack2 = []
   let len = buffer.length
   let start = closestBracketForward(buffer, index)
   let end = 0
@@ -27,17 +28,22 @@ function getBuffPos(buffer, index){
   do{
     
     let character = buffer[i];
-    if(character == "{" || character == "["){
-      counter++
-    }else if(character == "}" || character == "]"){
-      counter--
+    if(character == "{"){
+      stack1.pop(character)
+    }else if(character == "["){
+      stack2.push(character)
+    }
+    else if(character == "}"){
+      stack1.pop()
+    }else if(character == "]"){
+      stack2.pop()
     }
     i++
     if( i >= len ){ 
       throw "Error: either you forgot to add '}' or the buffer is corrupted" 
     }
 
-  }while( counter && i < len)
+  }while( stack1.length > 0 && stack2.length > 0 && i < len)
   end=i
 
   return [start, end]
