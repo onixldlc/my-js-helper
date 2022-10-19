@@ -1,12 +1,12 @@
-var payload = (clientVersion, continuation) => `
+var payload = (clientVersion, continuation="") => `
 {
 	"context": {
 		"client": {
 			"clientName": "WEB",
 			"clientVersion": "${clientVersion}"
 		}
-	},
-	"continuation": "${continuation}"
+	}
+	${(continuation)?`,"continuation": "${continuation}"`:""}
 }`
 
 
