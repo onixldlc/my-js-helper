@@ -5,8 +5,8 @@ var payload = (clientVersion, continuation="") => `
 			"clientName": "WEB",
 			"clientVersion": "${clientVersion}"
 		}
-	}
-	${(continuation)?`,"continuation": "${continuation}"`:""}
+	},
+	"continuation": "${continuation}"
 }`
 
 
