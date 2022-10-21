@@ -10,7 +10,7 @@ function postProcess(arr){
 function createData(data){
 	const dataTemplate = (url, length, creator, title)=>{
     return{
-      index:0
+      index:0,
       url:url,
       length:length,
       creator:creator,
