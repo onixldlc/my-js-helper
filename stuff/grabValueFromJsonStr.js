@@ -1,7 +1,7 @@
 
 function grabValueFrom(buffer, key){
 	if(!key.length){throw "Error: need array or string"}
-	let keys = (typeof key == string)?[key]:key
+	let keys = (typeof key == "string")?[key]:key
 	let data = buffer
 	for(key of keys){
 		let keyPos = data.indexOf(key)
