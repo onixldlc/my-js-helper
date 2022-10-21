@@ -1,10 +1,15 @@
 
 function grabValueFrom(buffer, key){
-	let keyPos = buffer.indexOf(key)
-	if(keyPos == -1){throw "Error: key not found in buffer"}
-	let buffPos = getBuffPos(buffer, keyPos)
-	let data = buffer.slice(...buffPos)
-	return data
+	if(!key.length){throw "Error: need array or string"}
+	let keys = (typeof key == string)?[key]:key
+	let data = buffer
+	for(key of keys){
+		let keyPos = data.indexOf(key)
+		if(keyPos == -1){throw "Error: key not found in buffer"}
+		let buffPos = getBuffPos(data, keyPos)
+		data = data.slice(...buffPos)	
+	}
+	return JSON.parse(data)
 }
 
 function closestValue(buffer, index){
