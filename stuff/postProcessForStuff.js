@@ -1,4 +1,4 @@
-function postProcess(arr, channelName){
+function postProcess(arr, channelName=""){
 	return arr.map((value, index)=>{
 		let tempData = createData(value, channelName)
 		tempData.index=index;
@@ -28,7 +28,7 @@ function createData(data, channelName){
 	if(location.pathname.split("/").at(-1) == "videos"){
 		let tempTime = grabValueFrom(textData, ["TimeStatus", "label"])
 		length = String(convertToSecondSimple(tempTime));
-		creator = channelName
+		creator = channelName || ""
 	}else if(location.pathname.split("/").at(-1) == "playlist"){
 		length = grabValueFrom(textData, "lengthSeconds");
 		creator = grabValueFrom(textData, ["shortBylineText", "text"])
