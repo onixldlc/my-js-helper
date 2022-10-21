@@ -11,3 +11,10 @@ function convertToSecond(len){
 	})
 	return finalLen;
 }
+
+function convertToSecondSimple(time){
+	const timeConvertTable=[1, 60, 3600, 86400]
+	return time.split(":").reverse().reduce((prev,curr,index)=>{
+		return prev + parseInt(curr)*timeConvertTable[index]
+	}, 0)
+}
