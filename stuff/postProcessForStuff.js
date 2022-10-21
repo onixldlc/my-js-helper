@@ -1,12 +1,12 @@
-function postProcess(arr, channelName=""){
+function postProcess(arr, filename){
 	return arr.map((value, index)=>{
-		let tempData = createData(value, channelName)
+		let tempData = createData(value, filename)
 		tempData.index=index;
 		return tempData;
 	})
 }
 
-function createData(data, channelName){
+function createData(data, filename){
 	const dataTemplate = (url, length, creator, title)=>{
 		return{
 			index:0,
@@ -16,22 +16,41 @@ function createData(data, channelName){
 			title:title
 		}
 	}
+	let dataFunc={
+		videos:{
+			idFunc:(textData)=>{
+				return grabValueFrom(textData, ["webCommand"]).url;
+			},
+			lengthFunc:(textData)=>{
+				let tempTime =  grabValueFrom(textData, ["TimeStatus", "simpleText"]);
+				return String(convertToSecondSimple(tempTime));
+			},
+			creator:(textData, filename)=>{
+				return filename;
+			}
+		},
+		playlist:{
+			idFunc:(textData)=>{
+				return grabValueFrom(textData, ["webCommand"], {index:2}).url.split("&")[0];
+			},
+			lengthFunc:(textData)=>{
+				return grabValueFrom(textData, ["lengthSeconds"]);
+			},
+			creator:(textData, filename)=>{
+				return grabValueFrom(textData, ["shortBylineText", "text"]); 
+			}
+		}
+	}
 
 	let baseurl=location.origin;
 	let textData = JSON.stringify(data);
-	let id = grabValueFrom(textData, ["webCommand"]).url;
+	let mode = location.pathname.split("/").at(-1)
+	let id = dataFunc[mode].idFunc(textData);
 	
 	let url = baseurl+id;
 	let title = grabValueFrom(textData, "text");
-	let length="";
-	let creator="";
-	if(location.pathname.split("/").at(-1) == "videos"){
-		let tempTime = grabValueFrom(textData, ["TimeStatus", "label"])
-		length = String(convertToSecondSimple(tempTime));
-		creator = channelName || ""
-	}else if(location.pathname.split("/").at(-1) == "playlist"){
-		length = grabValueFrom(textData, "lengthSeconds");
-		creator = grabValueFrom(textData, ["shortBylineText", "text"])
-	}
+	let length= dataFunc[mode].lengthFunc(textData);
+	length = (length != "NaN") ? length : "1"
+	let creator= dataFunc[mode].creator(textData, filename);
 	return dataTemplate(url, length, creator, title)
 }
