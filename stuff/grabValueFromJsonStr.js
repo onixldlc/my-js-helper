@@ -1,4 +1,4 @@
-function grabValueFrom(buffer, key, offset=0, index=1){
+function grabValueFrom(buffer, key, {offset=0, index=1}){
 	if(!key.length){throw "Error: need array or string"}
 	let keys = (typeof key == "string")?[key]:key
 	let data = buffer
