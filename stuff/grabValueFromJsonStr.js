@@ -1,12 +1,11 @@
-
-function grabValueFrom(buffer, key){
+function grabValueFrom(buffer, key, offset=0){
 	if(!key.length){throw "Error: need array or string"}
 	let keys = (typeof key == "string")?[key]:key
 	let data = buffer
 	for(key of keys){
 		let keyPos = data.indexOf(key)
 		if(keyPos == -1){throw "Error: key not found in buffer"}
-		let buffPos = getBuffPos(data, keyPos)
+		let buffPos = getBuffPos(data, keyPos+offset)
 		data = data.slice(...buffPos)	
 	}
 	return JSON.parse(data)
