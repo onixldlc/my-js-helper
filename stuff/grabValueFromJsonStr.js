@@ -58,6 +58,5 @@ function getBuffPos(buffer, index){
 		}
 	}while( stack.length > 0 && i < len)
 	end=i
-	console.log(end)
 	return [start, end]
 }
