@@ -1,6 +1,7 @@
 
 function grabValueFrom(buffer, key){
 	let keyPos = buffer.indexOf(key)
+	if(keyPos == -1){throw "Error: key not found in buffer"}
 	let buffPos = getBuffPos(buffer, keyPos)
 	let data = buffer.slice(...buffPos)
 	return data
