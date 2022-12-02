@@ -5,7 +5,16 @@ function addDotToInt(num){
 	return String(dotted);
 }
 
+function addDotToIntV2(num){
+	let numStr = String(num).replaceAll(/[A-z]|\.\d\d$|\.|,|,\d\d$|\W/g,"")
+	if(numStr.length<4){return numStr}
+	let lower = "."+numStr.slice(-3)
+	let dotted = addDotToIntV2(numStr.slice(0,-3))+lower
+	return dotted;
+}
+
+
 function convertToIDR(num){
-	let currency = parseInt(String(num).replaceAll(".",""))
-	return `Rp${addDotToInt(currency)},00`
+	let currency = num
+	return `Rp${addDotToIntV2(currency)},00`
 }
