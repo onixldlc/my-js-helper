@@ -1,4 +1,5 @@
 function grabValueFrom(buffer, key, {offset=0, index=1}={}){
+	var formartedBuff = buffer.replaceAll(/(:\s+)(\d+)/g,"$1\"$2\"")
 	if(!key.length){throw "Error: need array or string"}
 	let keys = (typeof key == "string")?[key]:key
 	let data = buffer
@@ -48,11 +49,20 @@ function getBuffPos(buffer, index){
 			isString = true
 			stack.push(character)
 		}
+		else if(character == "'" && !isString){
+			isString = true
+			stack.push(character)
+		}
 		
 		else if(character == "\"" && isString){
 			isString = false
 			stack.pop()
 		}
+		else if(character == "'" && isString){
+			isString = false
+			stack.pop(character)
+		}
+
 		else if(character == "}"){
 			stack.pop()
 		}
@@ -64,7 +74,15 @@ function getBuffPos(buffer, index){
 		if( i >= len ){ 
 			throw "Error: either you forgot to add '}' or the buffer is corrupted" 
 		}
-	}while( stack.length > 0 && i < len)
+
+	var isStackEmpty = stack.length < 1
+	var sliceHasJson =  buffer.slice(start, i).match(/["'{}\[\]]/)
+	
+	if(isStackEmpty && sliceHasJson){
+		break;
+	}
+
+	}while(i < len)
 	end=i
 	return [start, end]
 }
