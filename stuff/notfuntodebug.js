@@ -12,9 +12,6 @@
 		this.videosJson = []
 		this.videosM3U = ""
 		this.filename = ""
-
-		// remove continue token
-		// this.videos.pop()
 	}
 
 	_get_version(){
@@ -71,7 +68,6 @@
 		while(x<100 && notFinish){
 			console.log(`page: ${x}`)
 			var resp = await this._getBatch()
-			// debugger
 			var videos = grabValueFrom(resp, "continuationItems")
 
 			try{
@@ -80,16 +76,12 @@
 			}catch{
 				notFinish = false
 			}
-			
-			// console.log(videos.length, videos)
-			// console.log(videos.length, videos.slice(-1))
 
 			this.videos = this.videos.concat(videos) 
 			x++
 			await sleep(500)
 		}
 		this.videos = this.videos.filter(value=>!Object.keys(value)[0].includes("continuationItem"))
-		// console.log(this.videos)
 		return this.videos
 	}
 
@@ -424,7 +416,6 @@ function createData(data, filename){
 	let length= dataFunc[mode].lengthFunc(textData);
 	length = (length != "NaN") ? length : "1"
 	let creator= dataFunc[mode].creator(textData, filename);
-	// console.log(dataTemplate(url, length, creator, title))
 	return dataTemplate(url, length, creator, title)
 }
 
