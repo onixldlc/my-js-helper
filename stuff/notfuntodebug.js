@@ -114,8 +114,8 @@
 	}
 
 	async downloadPlaylist(){
-		await downloadAsM3U()
-		await downloadAsJson()
+		await this.downloadAsM3U()
+		await this.downloadAsJson()
 	}
 }
 
