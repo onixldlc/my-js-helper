@@ -1,30 +1,3 @@
-function grabValueFrom(buffer, key, {offset=0, index=1}={}){
-	var formartedBuff = buffer.replaceAll(/(:\s+)(\d+)/g,"$1\"$2\"")
-	if(!key.length){throw "Error: need array or string"}
-	let keys = (typeof key == "string")?[key]:key
-	let data = buffer
-	for(key of keys){
-		let keyPos = getKeyPos(data, key, index)
-		if(keyPos == -1){throw "Error: key not found in buffer"}
-		let buffPos = getBuffPos(data, keyPos+offset)
-		data = data.slice(...buffPos)	
-	}
-	return JSON.parse(data)
-}
-
-function getKeyPos(buffer, toFind, index){
-	return buffer.split(toFind, index).join(toFind).length;
-}
-
-function closestValue(buffer, index){
-	for(let i=index; i < buffer.length; i++){
-		if(buffer[i]==":"){
-			return i+1
-		}
-	}
-	throw "Error: ':' was not found"
-}
-
 function getBuffPos(buffer, index){
 	let stack = []
 	let prefchar = ""
@@ -54,24 +27,29 @@ function getBuffPos(buffer, index){
 			stack.push(character)
 		}
 		
-		else if(character == "\"" && isString){
+		else if(character == "\"" && stack.slice(-1) == "\"" && isString){
 			isString = false
 			stack.pop()
 		}
-		else if(character == "'" && isString){
+		else if(character == "'"  && stack.slice(-1) == "'" && isString){
 			isString = false
-			stack.pop(character)
+			stack.pop()
 		}
 
-		else if(character == "}"){
+		else if(character == "}" && stack.slice(-1) == "{" ){
 			stack.pop()
 		}
-		else if(character == "]"){
+		else if(character == "]" && stack.slice(-1) == "["){
 			stack.pop()
 		}
 		i++
 		prefchar = character
 		if( i >= len ){ 
+
+			if(mode_debug===1){
+				debugger
+			}
+
 			throw "Error: either you forgot to add '}' or the buffer is corrupted" 
 		}
 
@@ -79,6 +57,11 @@ function getBuffPos(buffer, index){
 	var sliceHasJson =  buffer.slice(start, i).match(/["'{}\[\]]/)
 	
 	if(isStackEmpty && sliceHasJson){
+
+		if(mode_debug===1){
+			console.log(stack, buffer.slice(start, i))
+		}
+
 		break;
 	}
 
