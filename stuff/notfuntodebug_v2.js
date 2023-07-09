@@ -8,18 +8,27 @@
 				"videos": ["continuationItems"],
 				"continuation":["continuationEndpoint", "token"],
 				"videoCount":["videosCount", "text"],
+				"title":["title"],
 			},
 			"playlist":{
 				"initVideos": ["playlistVideo", "contents"],
 				"videos": ["continuationItems"],
 				"continuation":["continuationEndpoint", "token"],
 				"videoCount":["numVideosText", "text"],
+				"title":["title", "simpleText"],
 			}
 		}
 
 		this.initdata = initdata
-		this.name = grabValueFrom(JSON.stringify(initdata.header), "title")
-		this.continuation = grabValueFrom(JSON.stringify(initdata), this.key_dict[this.mode].continuation)
+		this.name = grabValueFrom(JSON.stringify(initdata.header), this.key_dict[this.mode].title)
+		this.notFinish = true
+
+		try{
+			this.continuation = grabValueFrom(JSON.stringify(initdata), this.key_dict[this.mode].continuation)
+		}catch{
+			this.notFinish = false
+		}
+		
 		this.pathname = grabValueFrom(initdata, "apiUrl")
 		this.videoCount = grabValueFrom(initdata, this.key_dict[this.mode].videoCount)
 		this.apikey = this._get_apikey()
@@ -84,8 +93,8 @@
 
 		console.log(this.videos.length, this.videoCount)
 		console.log("fetching...")
-		var notFinish = true
-		while(x<100 && notFinish){
+		
+		while(x<200 && this.notFinish){
 			console.log(`page: ${x}`)
 			var resp = await this._getBatch()
 			// debugger
@@ -95,7 +104,7 @@
 				var new_continuation = grabValueFrom(resp, this.key_dict[this.mode].continuation)
 				this.continuation = new_continuation
 			}catch{
-				notFinish = false
+				this.notFinish = false
 			}
 			
 			// console.log(videos.length, videos)
@@ -103,7 +112,7 @@
 
 			this.videos = this.videos.concat(videos) 
 			x++
-			await sleep(500)
+			await sleep(1000)
 		}
 		this.videos = this.videos.filter(value=>!Object.keys(value)[0].includes("continuationItem"))
 		// console.log(this.videos)
@@ -130,12 +139,12 @@
 	
 	async downloadAsJson(){
 		var jsonPlaylist = await this.getAllAsJson()
-		console.save(jsonPlaylist, `${this.name}.json`)
+		console.save(jsonPlaylist, `${this.name.replaceAll(" ","_")}.json`)
 	}
 
 	async downloadAsM3U(){
 		var M3UPlaylist = await this.getAllAsM3U()
-		console.save(M3UPlaylist, `${this.name}.M3U8`)
+		console.save(M3UPlaylist, `${this.name.replaceAll(" ","_")}.M3U8`)
 	}
 
 	async downloadPlaylist(){
